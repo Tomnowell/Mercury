@@ -34,6 +34,11 @@
           "uap10.0.17763": {
             "projectReferences": {}
           }
+        },
+        "restoreAuditProperties": {
+          "enableAudit": "true",
+          "auditLevel": "low",
+          "auditMode": "direct"
         }
       },
       "frameworks": {
@@ -42,6 +47,14 @@
             "Azure.Communication.Calling.WindowsClient": {
               "target": "Package",
               "version": "[1.6.0, )"
+            },
+            "Azure.Identity": {
+              "target": "Package",
+              "version": "[1.11.3, )"
+            },
+            "Azure.Security.KeyVault.Secrets": {
+              "target": "Package",
+              "version": "[4.6.0, )"
             },
             "Microsoft.NETCore.UniversalWindowsPlatform": {
               "target": "Package",

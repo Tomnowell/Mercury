@@ -1,0 +1,97 @@
+{
+  "Version": 1,
+  "WorkspaceRootPath": "C:\\Users\\tom\\source\\repos\\Mercury\\",
+  "Documents": [
+    {
+      "AbsoluteMoniker": "D:0:0:{FA605D98-3557-4B57-9F43-453A5573CBF4}|Mercury\\Mercury.csproj|c:\\users\\tom\\source\\repos\\mercury\\mercury\\auth.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{FA605D98-3557-4B57-9F43-453A5573CBF4}|Mercury\\Mercury.csproj|solutionrelative:mercury\\auth.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{FA605D98-3557-4B57-9F43-453A5573CBF4}|Mercury\\Mercury.csproj|C:\\Users\\tom\\source\\repos\\Mercury\\mercury\\mainpage.xaml.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{FA605D98-3557-4B57-9F43-453A5573CBF4}|Mercury\\Mercury.csproj|solutionrelative:mercury\\mainpage.xaml.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{00000000-0000-0000-0000-000000000000}|\u003CSolution\u003E|Mercury||{04B8AB82-A572-4FEF-95CE-5222444B6B64}|"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{FA605D98-3557-4B57-9F43-453A5573CBF4}|Mercury\\Mercury.csproj|C:\\Users\\tom\\source\\repos\\Mercury\\mercury\\mainpage.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}",
+      "RelativeMoniker": "D:0:0:{FA605D98-3557-4B57-9F43-453A5573CBF4}|Mercury\\Mercury.csproj|solutionrelative:mercury\\mainpage.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{FA605D98-3557-4B57-9F43-453A5573CBF4}|Mercury\\Mercury.csproj|C:\\Users\\tom\\source\\repos\\Mercury\\mercury\\package.appxmanifest||{4D47164B-07B6-4A52-A855-728D6A2E2AA3}",
+      "RelativeMoniker": "D:0:0:{FA605D98-3557-4B57-9F43-453A5573CBF4}|Mercury\\Mercury.csproj|solutionrelative:mercury\\package.appxmanifest||{4D47164B-07B6-4A52-A855-728D6A2E2AA3}"
+    }
+  ],
+  "DocumentGroupContainers": [
+    {
+      "Orientation": 0,
+      "VerticalTabListWidth": 256,
+      "DocumentGroups": [
+        {
+          "DockedWidth": 200,
+          "SelectedChildIndex": 0,
+          "Children": [
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "Auth.cs",
+              "DocumentMoniker": "C:\\Users\\tom\\source\\repos\\Mercury\\Mercury\\Auth.cs",
+              "RelativeDocumentMoniker": "Mercury\\Auth.cs",
+              "ToolTip": "C:\\Users\\tom\\source\\repos\\Mercury\\Mercury\\Auth.cs",
+              "RelativeToolTip": "Mercury\\Auth.cs",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAkAAAAIAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-05-10T06:45:10.378Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "MainPage.xaml.cs",
+              "DocumentMoniker": "C:\\Users\\tom\\source\\repos\\Mercury\\Mercury\\MainPage.xaml.cs",
+              "RelativeDocumentMoniker": "Mercury\\MainPage.xaml.cs",
+              "ToolTip": "C:\\Users\\tom\\source\\repos\\Mercury\\Mercury\\MainPage.xaml.cs",
+              "RelativeToolTip": "Mercury\\MainPage.xaml.cs",
+              "ViewState": "AQIAADsAAAAAAAAAAAAAAEMAAAAJAAAA",
+              "Icon": "00000000-0000-0000-0000-000000000000.000000|iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAYAAACNiR0NAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAAH\u002BSURBVDhP7ZRPaNNQHMe/TdNma2NrW1jUFYZYN0YKHqZischAMCCjh94siEfp0buIeBZ2LYKXHvSWQ4toDkKC0F7EU93NQyEthkFnG9uuaf6YhIcusknBHTz4gR\u002B/x\u002B/7e1/ee8l7IRzhmbi3s0TTzc3zcYQpp3R3K9sk0sJQJPtscgmcSzJ4\u002BeErPvemj99\u002B6t0j0sKEcF96SsbgV\u002BOX\u002BQvxyvu9A9zaSOL2\u002BrK8Zn9R6vU66QBomkYul0OpVNJns9mLYrGoE8mHhhPaImNoI4Nboikcmjb29TkYOr6dZtPbPM\u002BTDmAwGGAymaDb7Q44jttvt9tSoVDQiOyu8AhvPqo7\u002BqHVfP5OReXGCgQ\u002BiRU2BMMwSAcgSZIfiUQC5XIZLMs\u002BSKVSYj6f/\u002B7pgTPs9CbofTPw6E4WQj6JTAyYz\u002BdE/YXjONB1HaIoQtO03el0\u002BpBIQcPrq6Ybbr64jLOMA8e2/MnHYds2RqMR3C2nG43GGVJGmGSfm1evrI8PtMqltSzoMOVPOo5MJuN/GC/6/T5UVVU6nY7saYEVyrKMVquF8Xh8oplnIgjCz/DMTdMk6m\u002BGlmX5Z3bSNhchYHga/Df8e/59Q5pkn2g0CoqioCgKGIYh1T8zHA4Ri7mXnhB4barV6jX3hjzxmryffBG8VycSibyu1WqvSOk0AX4A4Q67Z\u002BxJ14gAAAAASUVORK5CYII=",
+              "WhenOpened": "2024-05-10T02:35:19.803Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "Mercury",
+              "DocumentMoniker": "C:\\Users\\tom\\source\\repos\\Mercury\\Mercury\\Mercury.csproj",
+              "RelativeDocumentMoniker": "Mercury\\Mercury.csproj",
+              "ToolTip": "C:\\Users\\tom\\source\\repos\\Mercury\\Mercury\\Mercury.csproj",
+              "RelativeToolTip": "Mercury\\Mercury.csproj",
+              "Icon": "00000000-0000-0000-0000-000000000000.000000|iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAYAAACNiR0NAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAAIgSURBVDhPzZTBSxtBFMa/hGiSzbq7pksgQdumKqHaFqJQKQlRRMlJPIQguUmOiyJ68s/wmEtuIh68WAoxRyFQj1pagjZo24CIaa2bmEUSk232JZYMvTSQg79lhuHbmW/emzcMHj0mo1MUJVYul32appHYKRzHwW63nyYSiW0yjMfj7yVJmhcEgSZ0SrFYhKqqH5LJ5LzFEEqlEoLBIMLhME3olHQ6jVQqRWMz9V2EInxA13VoVQ2ZHxnkfuVo7HK4MOGZgE/2YevTFgaEAWq7X3ax\u002Bm4VgpU9Jsbw5u4Gx5fHyBayEK0iXLwLok2E3vh2Pu8g/TUNmZMhO2Rkvmcg2SQsvFxorW7CpHxVvsLBtwPadWZoBpHRCGZfzMIjeHD\u002B\u002Bxy3lVsUtALyah739XvkrnOktcMYqncqTn6eIPQ8BDfvhtlkptZv68fK5AqGncMIPgsiOhaFo9eB5cll0tphDOt6HdValUxMJrpRhLHRWmoNR5dH2MvuYfPjJqO1wxjyvTwGxUEc5g8pfaNItXoNFrMFyluFogk8DSAyFqG5D1o7TFGMIkx5pyjt/dN99Fn76OBHnoxg3DOOxdeLzaI0Gt/DY9o7Da6Ha61uwkTotDspAq/kpZTOrs9wUbpApVah/3NDc/C7/ZRF7E3sHzMDxtBIzdg9\u002BiqK9cA6NkIbWPIv0R00/v0PjGE3YB4HURRJ7JTGw/D3cej689WSHi3AH23/xwMao1vNAAAAAElFTkSuQmCC",
+              "WhenOpened": "2024-05-10T02:42:05.404Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 3,
+              "Title": "MainPage.xaml",
+              "DocumentMoniker": "C:\\Users\\tom\\source\\repos\\Mercury\\Mercury\\MainPage.xaml",
+              "RelativeDocumentMoniker": "Mercury\\MainPage.xaml",
+              "ToolTip": "C:\\Users\\tom\\source\\repos\\Mercury\\Mercury\\MainPage.xaml",
+              "RelativeToolTip": "Mercury\\MainPage.xaml",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003549|",
+              "WhenOpened": "2024-05-10T02:29:45.022Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 4,
+              "Title": "Package.appxmanifest",
+              "DocumentMoniker": "C:\\Users\\tom\\source\\repos\\Mercury\\Mercury\\Package.appxmanifest",
+              "RelativeDocumentMoniker": "Mercury\\Package.appxmanifest",
+              "ToolTip": "C:\\Users\\tom\\source\\repos\\Mercury\\Mercury\\Package.appxmanifest",
+              "RelativeToolTip": "Mercury\\Package.appxmanifest",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001793|",
+              "WhenOpened": "2024-05-10T01:09:09.134Z"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

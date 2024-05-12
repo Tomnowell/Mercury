@@ -6,8 +6,7 @@ using Azure.Security.KeyVault.Secrets;
 
 namespace Mercury
 {
-    interna
-        l class Auth
+    internal class Auth
     {
         
         const string keyVaultName = "Hecate";

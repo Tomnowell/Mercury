@@ -15,6 +15,7 @@ using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Navigation;
 
+
 namespace Mercury
 {
     public sealed partial class MainPage : Page

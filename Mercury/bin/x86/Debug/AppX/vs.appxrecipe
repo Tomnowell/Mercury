@@ -9,7 +9,7 @@
     <SolutionConfiguration>Debug|x86</SolutionConfiguration>
     <PackageArchitecture>x86</PackageArchitecture>
     <PackageIdentityName>200d7ccd-bcd9-4b97-8712-7cdb93711632</PackageIdentityName>
-    <PackageIdentityPublisher>CN=tom</PackageIdentityPublisher>
+    <PackageIdentityPublisher>CN=ThomaSoft</PackageIdentityPublisher>
     <IntermediateOutputPath>C:\Users\tom\source\repos\Mercury\Mercury\obj\x86\Debug\</IntermediateOutputPath>
     <RemoteDeploymentType>
     </RemoteDeploymentType>
@@ -19,24 +19,24 @@
     <DeployOptionalPackages>false</DeployOptionalPackages>
     <WindowsSdkPath>C:\Program Files %28x86%29\Windows Kits\10\</WindowsSdkPath>
     <LayoutDir>C:\Users\tom\source\repos\Mercury\Mercury\bin\x86\Debug\AppX</LayoutDir>
-    <RegisteredManifestChecksum>AAB00840A70631767CF36223E0B1D45CC0761CA90F78C98FF049A99D06193EC9</RegisteredManifestChecksum>
-    <RegisteredPackageMoniker>200d7ccd-bcd9-4b97-8712-7cdb93711632_1.0.0.0_x86__3n74fj70kc556</RegisteredPackageMoniker>
-    <RegisteredUserModeAppID>200d7ccd-bcd9-4b97-8712-7cdb93711632_3n74fj70kc556!App</RegisteredUserModeAppID>
+    <RegisteredManifestChecksum>21907938B31E445D4CFE9C9F2A514F3560FA96F5FA279DC0E9E68E9EB568D559</RegisteredManifestChecksum>
+    <RegisteredPackageMoniker>200d7ccd-bcd9-4b97-8712-7cdb93711632_0.1.1.0_x86__ccr09ewntvnze</RegisteredPackageMoniker>
+    <RegisteredUserModeAppID>200d7ccd-bcd9-4b97-8712-7cdb93711632_ccr09ewntvnze!App</RegisteredUserModeAppID>
     <RegisteredPackageID>200d7ccd-bcd9-4b97-8712-7cdb93711632</RegisteredPackageID>
-    <RegisteredPackagePublisher>CN=tom</RegisteredPackagePublisher>
-    <RegisteredVersion>1.0.0.0</RegisteredVersion>
+    <RegisteredPackagePublisher>CN=ThomaSoft</RegisteredPackagePublisher>
+    <RegisteredVersion>0.1.1.0</RegisteredVersion>
   </PropertyGroup>
   <ItemGroup>
     <AppXManifest Include="C:\Users\tom\source\repos\Mercury\Mercury\bin\x86\Debug\Core\AppxManifest.xml">
       <PackagePath>AppxManifest.xml</PackagePath>
       <ReRegisterAppIfChanged>true</ReRegisterAppIfChanged>
-      <Modified>2024-05-10T13:16:01.597</Modified>
+      <Modified>2024-05-13T01:07:41.324</Modified>
     </AppXManifest>
   </ItemGroup>
   <ItemGroup>
     <AppxPackagedFile Include="C:\Users\tom\source\repos\Mercury\Mercury\bin\x86\Debug\Mercury.exe">
       <PackagePath>entrypoint\Mercury.exe</PackagePath>
-      <Modified>2024-05-10T13:15:53.054</Modified>
+      <Modified>2024-05-13T01:07:37.565</Modified>
     </AppxPackagedFile>
     <AppxPackagedFile Include="C:\Users\tom\.nuget\packages\azure.communication.calling.windowsclient\1.6.0\runtimes\win10-x86\nativeAssets\uap10.0\Azure.Communication.Calling.WindowsClient.dll">
       <PackagePath>Azure.Communication.Calling.WindowsClient.dll</PackagePath>
@@ -125,6 +125,10 @@
     <AppxPackagedFile Include="C:\Users\tom\.nuget\packages\system.runtime.compilerservices.unsafe\6.0.0\lib\netstandard2.0\System.Runtime.CompilerServices.Unsafe.dll">
       <PackagePath>System.Runtime.CompilerServices.Unsafe.dll</PackagePath>
       <Modified>2021-10-22T23:40:46.000</Modified>
+    </AppxPackagedFile>
+    <AppxPackagedFile Include="C:\Users\tom\.nuget\packages\system.security.accesscontrol\6.0.1\runtimes\win\lib\netstandard2.0\System.Security.AccessControl.dll">
+      <PackagePath>System.Security.AccessControl.dll</PackagePath>
+      <Modified>2024-03-21T17:12:34.000</Modified>
     </AppxPackagedFile>
     <AppxPackagedFile Include="C:\Users\tom\.nuget\packages\system.security.cryptography.protecteddata\4.7.0\runtimes\win\lib\netstandard2.0\System.Security.Cryptography.ProtectedData.dll">
       <PackagePath>System.Security.Cryptography.ProtectedData.dll</PackagePath>
@@ -410,11 +414,11 @@
     </AppxPackagedFile>
     <AppxPackagedFile Include="C:\Users\tom\source\repos\Mercury\Mercury\bin\x86\Debug\App.xbf">
       <PackagePath>App.xbf</PackagePath>
-      <Modified>2024-05-10T13:15:52.829</Modified>
+      <Modified>2024-05-13T01:07:37.417</Modified>
     </AppxPackagedFile>
     <AppxPackagedFile Include="C:\Users\tom\source\repos\Mercury\Mercury\bin\x86\Debug\MainPage.xbf">
       <PackagePath>MainPage.xbf</PackagePath>
-      <Modified>2024-05-10T13:15:52.829</Modified>
+      <Modified>2024-05-13T01:07:37.417</Modified>
     </AppxPackagedFile>
     <AppxPackagedFile Include="C:\Program Files %28x86%29\Windows Kits\10\UnionMetadata\10.0.22000.0\Windows.winmd">
       <PackagePath>WinMetadata\Windows.winmd</PackagePath>
@@ -422,11 +426,11 @@
     </AppxPackagedFile>
     <AppxPackagedFile Include="C:\Users\tom\source\repos\Mercury\Mercury\bin\x86\Debug\resources.pri">
       <PackagePath>resources.pri</PackagePath>
-      <Modified>2024-05-10T13:15:55.741</Modified>
+      <Modified>2024-05-13T01:07:38.396</Modified>
     </AppxPackagedFile>
     <AppxPackagedFile Include="C:\Users\tom\source\repos\Mercury\Mercury\bin\x86\Debug\Core\Mercury.exe">
       <PackagePath>Mercury.exe</PackagePath>
-      <Modified>2024-05-10T13:16:01.570</Modified>
+      <Modified>2024-05-13T01:07:41.316</Modified>
     </AppxPackagedFile>
   </ItemGroup>
   <ItemGroup>

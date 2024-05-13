@@ -59,6 +59,15 @@
             "Microsoft.NETCore.UniversalWindowsPlatform": {
               "target": "Package",
               "version": "[6.2.14, )"
+            },
+            "System.Security.AccessControl": {
+              "target": "Package",
+              "version": "[6.0.1, )"
+            },
+            "System.Security.Principal.Windows": {
+              "target": "Package",
+              "version": "[5.0.0, )",
+              "versionOverride": "[5.0.0, )"
             }
           },
           "imports": [

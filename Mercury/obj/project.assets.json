@@ -1505,16 +1505,23 @@
           }
         }
       },
-      "System.Security.AccessControl/5.0.0": {
+      "System.Security.AccessControl/6.0.1": {
         "type": "package",
+        "dependencies": {
+          "System.Security.Principal.Windows": "5.0.0"
+        },
         "compile": {
-          "ref/uap10.0.16299/_._": {}
+          "lib/netstandard2.0/System.Security.AccessControl.dll": {
+            "related": ".xml"
+          }
         },
         "runtime": {
-          "lib/uap10.0.16299/_._": {}
+          "lib/netstandard2.0/System.Security.AccessControl.dll": {
+            "related": ".xml"
+          }
         },
         "runtimeTargets": {
-          "runtimes/win/lib/uap10.0.16299/_._": {
+          "runtimes/win/lib/netstandard2.0/System.Security.AccessControl.dll": {
             "assetType": "runtime",
             "rid": "win"
           }
@@ -3757,13 +3764,20 @@
           "runtimes/win8/lib/netstandard1.3/System.Runtime.WindowsRuntime.dll": {}
         }
       },
-      "System.Security.AccessControl/5.0.0": {
+      "System.Security.AccessControl/6.0.1": {
         "type": "package",
+        "dependencies": {
+          "System.Security.Principal.Windows": "5.0.0"
+        },
         "compile": {
-          "ref/uap10.0.16299/_._": {}
+          "lib/netstandard2.0/System.Security.AccessControl.dll": {
+            "related": ".xml"
+          }
         },
         "runtime": {
-          "runtimes/win/lib/uap10.0.16299/_._": {}
+          "runtimes/win/lib/netstandard2.0/System.Security.AccessControl.dll": {
+            "related": ".xml"
+          }
         }
       },
       "System.Security.Cryptography.Primitives/4.3.0": {
@@ -6038,13 +6052,20 @@
           "runtimes/win8-aot/lib/netcore50/System.Runtime.WindowsRuntime.dll": {}
         }
       },
-      "System.Security.AccessControl/5.0.0": {
+      "System.Security.AccessControl/6.0.1": {
         "type": "package",
+        "dependencies": {
+          "System.Security.Principal.Windows": "5.0.0"
+        },
         "compile": {
-          "ref/uap10.0.16299/_._": {}
+          "lib/netstandard2.0/System.Security.AccessControl.dll": {
+            "related": ".xml"
+          }
         },
         "runtime": {
-          "runtimes/win/lib/uap10.0.16299/_._": {}
+          "runtimes/win/lib/netstandard2.0/System.Security.AccessControl.dll": {
+            "related": ".xml"
+          }
         }
       },
       "System.Security.Cryptography.Primitives/4.3.0": {
@@ -8330,13 +8351,20 @@
           "runtimes/win8-aot/lib/netcore50/System.Runtime.WindowsRuntime.dll": {}
         }
       },
-      "System.Security.AccessControl/5.0.0": {
+      "System.Security.AccessControl/6.0.1": {
         "type": "package",
+        "dependencies": {
+          "System.Security.Principal.Windows": "5.0.0"
+        },
         "compile": {
-          "ref/uap10.0.16299/_._": {}
+          "lib/netstandard2.0/System.Security.AccessControl.dll": {
+            "related": ".xml"
+          }
         },
         "runtime": {
-          "runtimes/win/lib/uap10.0.16299/_._": {}
+          "runtimes/win/lib/netstandard2.0/System.Security.AccessControl.dll": {
+            "related": ".xml"
+          }
         }
       },
       "System.Security.Cryptography.Primitives/4.3.0": {
@@ -10579,13 +10607,20 @@
           "runtimes/win8/lib/netstandard1.3/System.Runtime.WindowsRuntime.dll": {}
         }
       },
-      "System.Security.AccessControl/5.0.0": {
+      "System.Security.AccessControl/6.0.1": {
         "type": "package",
+        "dependencies": {
+          "System.Security.Principal.Windows": "5.0.0"
+        },
         "compile": {
-          "ref/uap10.0.16299/_._": {}
+          "lib/netstandard2.0/System.Security.AccessControl.dll": {
+            "related": ".xml"
+          }
         },
         "runtime": {
-          "runtimes/win/lib/uap10.0.16299/_._": {}
+          "runtimes/win/lib/netstandard2.0/System.Security.AccessControl.dll": {
+            "related": ".xml"
+          }
         }
       },
       "System.Security.Cryptography.Primitives/4.3.0": {
@@ -12871,13 +12906,20 @@
           "runtimes/win8-aot/lib/netcore50/System.Runtime.WindowsRuntime.dll": {}
         }
       },
-      "System.Security.AccessControl/5.0.0": {
+      "System.Security.AccessControl/6.0.1": {
         "type": "package",
+        "dependencies": {
+          "System.Security.Principal.Windows": "5.0.0"
+        },
         "compile": {
-          "ref/uap10.0.16299/_._": {}
+          "lib/netstandard2.0/System.Security.AccessControl.dll": {
+            "related": ".xml"
+          }
         },
         "runtime": {
-          "runtimes/win/lib/uap10.0.16299/_._": {}
+          "runtimes/win/lib/netstandard2.0/System.Security.AccessControl.dll": {
+            "related": ".xml"
+          }
         }
       },
       "System.Security.Cryptography.Primitives/4.3.0": {
@@ -15120,13 +15162,20 @@
           "runtimes/win8/lib/netstandard1.3/System.Runtime.WindowsRuntime.dll": {}
         }
       },
-      "System.Security.AccessControl/5.0.0": {
+      "System.Security.AccessControl/6.0.1": {
         "type": "package",
+        "dependencies": {
+          "System.Security.Principal.Windows": "5.0.0"
+        },
         "compile": {
-          "ref/uap10.0.16299/_._": {}
+          "lib/netstandard2.0/System.Security.AccessControl.dll": {
+            "related": ".xml"
+          }
         },
         "runtime": {
-          "runtimes/win/lib/uap10.0.16299/_._": {}
+          "runtimes/win/lib/netstandard2.0/System.Security.AccessControl.dll": {
+            "related": ".xml"
+          }
         }
       },
       "System.Security.Cryptography.Primitives/4.3.0": {
@@ -17412,13 +17461,20 @@
           "runtimes/win8-aot/lib/netcore50/System.Runtime.WindowsRuntime.dll": {}
         }
       },
-      "System.Security.AccessControl/5.0.0": {
+      "System.Security.AccessControl/6.0.1": {
         "type": "package",
+        "dependencies": {
+          "System.Security.Principal.Windows": "5.0.0"
+        },
         "compile": {
-          "ref/uap10.0.16299/_._": {}
+          "lib/netstandard2.0/System.Security.AccessControl.dll": {
+            "related": ".xml"
+          }
         },
         "runtime": {
-          "runtimes/win/lib/uap10.0.16299/_._": {}
+          "runtimes/win/lib/netstandard2.0/System.Security.AccessControl.dll": {
+            "related": ".xml"
+          }
         }
       },
       "System.Security.Cryptography.Primitives/4.3.0": {
@@ -25383,51 +25439,33 @@
         "system.runtime.windowsruntime.nuspec"
       ]
     },
-    "System.Security.AccessControl/5.0.0": {
-      "sha512": "dagJ1mHZO3Ani8GH0PHpPEe/oYO+rVdbQjvjJkBRNQkX4t0r1iaeGn8+/ybkSLEan3/slM0t59SVdHzuHf2jmw==",
+    "System.Security.AccessControl/6.0.1": {
+      "sha512": "IQ4NXP/B3Ayzvw0rDQzVTYsCKyy0Jp9KI6aYcK7UnGVlR9+Awz++TIPCQtPYfLJfOpm8ajowMR09V7quD3sEHw==",
       "type": "package",
-      "path": "system.security.accesscontrol/5.0.0",
+      "path": "system.security.accesscontrol/6.0.1",
       "files": [
         ".nupkg.metadata",
         ".signature.p7s",
         "Icon.png",
         "LICENSE.TXT",
         "THIRD-PARTY-NOTICES.TXT",
-        "lib/net46/System.Security.AccessControl.dll",
+        "buildTransitive/netcoreapp2.0/System.Security.AccessControl.targets",
+        "buildTransitive/netcoreapp3.1/_._",
         "lib/net461/System.Security.AccessControl.dll",
         "lib/net461/System.Security.AccessControl.xml",
-        "lib/netstandard1.3/System.Security.AccessControl.dll",
+        "lib/net6.0/System.Security.AccessControl.dll",
+        "lib/net6.0/System.Security.AccessControl.xml",
         "lib/netstandard2.0/System.Security.AccessControl.dll",
         "lib/netstandard2.0/System.Security.AccessControl.xml",
-        "lib/uap10.0.16299/_._",
-        "ref/net46/System.Security.AccessControl.dll",
-        "ref/net461/System.Security.AccessControl.dll",
-        "ref/net461/System.Security.AccessControl.xml",
-        "ref/netstandard1.3/System.Security.AccessControl.dll",
-        "ref/netstandard1.3/System.Security.AccessControl.xml",
-        "ref/netstandard1.3/de/System.Security.AccessControl.xml",
-        "ref/netstandard1.3/es/System.Security.AccessControl.xml",
-        "ref/netstandard1.3/fr/System.Security.AccessControl.xml",
-        "ref/netstandard1.3/it/System.Security.AccessControl.xml",
-        "ref/netstandard1.3/ja/System.Security.AccessControl.xml",
-        "ref/netstandard1.3/ko/System.Security.AccessControl.xml",
-        "ref/netstandard1.3/ru/System.Security.AccessControl.xml",
-        "ref/netstandard1.3/zh-hans/System.Security.AccessControl.xml",
-        "ref/netstandard1.3/zh-hant/System.Security.AccessControl.xml",
-        "ref/netstandard2.0/System.Security.AccessControl.dll",
-        "ref/netstandard2.0/System.Security.AccessControl.xml",
-        "ref/uap10.0.16299/_._",
-        "runtimes/win/lib/net46/System.Security.AccessControl.dll",
         "runtimes/win/lib/net461/System.Security.AccessControl.dll",
         "runtimes/win/lib/net461/System.Security.AccessControl.xml",
-        "runtimes/win/lib/netcoreapp2.0/System.Security.AccessControl.dll",
-        "runtimes/win/lib/netcoreapp2.0/System.Security.AccessControl.xml",
-        "runtimes/win/lib/netstandard1.3/System.Security.AccessControl.dll",
-        "runtimes/win/lib/uap10.0.16299/_._",
-        "system.security.accesscontrol.5.0.0.nupkg.sha512",
+        "runtimes/win/lib/net6.0/System.Security.AccessControl.dll",
+        "runtimes/win/lib/net6.0/System.Security.AccessControl.xml",
+        "runtimes/win/lib/netstandard2.0/System.Security.AccessControl.dll",
+        "runtimes/win/lib/netstandard2.0/System.Security.AccessControl.xml",
+        "system.security.accesscontrol.6.0.1.nupkg.sha512",
         "system.security.accesscontrol.nuspec",
-        "useSharedDesignerContext.txt",
-        "version.txt"
+        "useSharedDesignerContext.txt"
       ]
     },
     "System.Security.Cryptography.Primitives/4.3.0": {
@@ -26520,7 +26558,9 @@
       "Azure.Communication.Calling.WindowsClient >= 1.6.0",
       "Azure.Identity >= 1.11.3",
       "Azure.Security.KeyVault.Secrets >= 4.6.0",
-      "Microsoft.NETCore.UniversalWindowsPlatform >= 6.2.14"
+      "Microsoft.NETCore.UniversalWindowsPlatform >= 6.2.14",
+      "System.Security.AccessControl >= 6.0.1",
+      "System.Security.Principal.Windows >= 5.0.0"
     ]
   },
   "packageFolders": {
@@ -26583,6 +26623,15 @@
           "Microsoft.NETCore.UniversalWindowsPlatform": {
             "target": "Package",
             "version": "[6.2.14, )"
+          },
+          "System.Security.AccessControl": {
+            "target": "Package",
+            "version": "[6.0.1, )"
+          },
+          "System.Security.Principal.Windows": {
+            "target": "Package",
+            "version": "[5.0.0, )",
+            "versionOverride": "[5.0.0, )"
           }
         },
         "imports": [

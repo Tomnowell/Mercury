@@ -8,7 +8,7 @@
     mc:Ignorable="d"
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}" Width="800" Height="600">
 
-        <!-- Don't forget to replace ‘CallingQuickstart’ with your project’s name -->
+        
 
 
     <Grid>
@@ -22,7 +22,7 @@
         <TextBox Grid.Row="1" x:Name="CalleeTextBox" PlaceholderText="Who would you like to call?" TextWrapping="Wrap" VerticalAlignment="Center" Height="30" Margin="10,10,10,10" />
 
         <Grid x:Name="AppTitleBar" Background="LightSeaGreen">
-            <TextBlock x:Name="QuickstartTitle" Text="Calling Quickstart sample title bar" Style="{StaticResource CaptionTextBlockStyle}" Padding="7,7,0,0"/>
+            <TextBlock x:Name="MercuryTitle" Text="Mercury" Style="{StaticResource CaptionTextBlockStyle}" Padding="7,7,0,0"/>
         </Grid>
 
         <Grid Grid.Row="2">

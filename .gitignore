@@ -30,3 +30,9 @@ go.work.sum
 # Editor/IDE
 # .idea/
 # .vscode/
+
+# macOS Fluff
+.DS_Store
+
+# Windows Fluff
+Thumbs.db

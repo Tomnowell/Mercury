@@ -3,9 +3,11 @@ package main
 import (
 	"fmt"
 	"log"
+	"net"
 
 	"github.com/Tomnowell/Mercury/internal/audio"
 	"github.com/Tomnowell/Mercury/internal/audio/portaudio"
+	"github.com/Tomnowell/Mercury/internal/media"
 )
 
 func main() {
@@ -29,21 +31,12 @@ func main() {
 	defer input.Close()
 	defer output.Close()
 
-	// Prototype V1 hardcoded buffer size - this should be adjustable or at least programatically adaptable.
-	buffer := make([]int16, 256)
+	receive_addr, _ := net.ResolveUDPAddr("udp6", "[::1]:6969")
+	conn, _ := net.DialUDP("udp6", nil, receive_addr)
 
-	log.Println("Loopback Started: Please talk into the mic to test (Ctrl+C) to stop")
+	pump := media.NewPump(conn, input, output)
 
-	for {
-		n, err := input.Read(buffer)
-		if err != nil {
-			log.Fatal(err)
-		}
-
-		_, err = output.Write(buffer[:n])
-		if err != nil {
-			log.Fatal(err)
-		}
-	}
+	go pump.SendLoop()
+	pump.ReceiveLoop()
 
 }

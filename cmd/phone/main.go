@@ -1,6 +1,7 @@
 package main
 
 import (
+	"flag"
 	"fmt"
 	"log"
 	"net"
@@ -11,32 +12,72 @@ import (
 )
 
 func main() {
+	local_address := flag.String("listen", "[::1]:5000", "local address")
+	remote_address := flag.String("remote", "[::1]:5001", "remote address")
+	flag.Parse()
 	backend := portaudio.New()
 
 	if err := audio.Init(backend); err != nil {
 		log.Fatal(err)
 	}
 
-	defer audio.Terminate()
+	defer func() {
+		err := audio.Terminate()
+		if err != nil {
+			log.Println(err)
+		}
+	}()
 
-	fmt.Println("Audio initialised")
-
-	format16k := audio.Format{
+	format := audio.Format{
 		SampleRate: audio.SampleRate16K,
 		Channels:   1,
 	}
-	input, _ := audio.NewInput(format16k)
-	output, _ := audio.NewOutput(format16k)
+	input, _ := audio.NewInput(format)
+	output, _ := audio.NewOutput(format)
 
-	defer input.Close()
-	defer output.Close()
+	fmt.Println("Audio initialised")
 
-	receive_addr, _ := net.ResolveUDPAddr("udp6", "[::1]:6969")
-	conn, _ := net.DialUDP("udp6", nil, receive_addr)
+	defer func(input audio.Input) {
+		err := input.Close()
+		if err != nil {
+			log.Println(err)
+		}
+	}(input)
+	defer func(output audio.Output) {
+		err := output.Close()
+		if err != nil {
+			log.Println(err)
+		}
+	}(output)
 
-	pump := media.NewPump(conn, input, output)
+	localAddr, err := net.ResolveUDPAddr("udp", *local_address)
+	if err != nil {
+		log.Fatal(err)
+	}
+	remoteAddr, err := net.ResolveUDPAddr("udp", *remote_address)
+	if err != nil {
+		log.Fatal(err)
+	}
+	conn, err := net.ListenUDP("udp6", localAddr)
+	if err != nil {
+		log.Fatal(err)
+	}
 
-	go pump.SendLoop()
-	pump.ReceiveLoop()
+	pump := media.NewPump(conn, remoteAddr, input, output, format)
+
+	go func() {
+		err := pump.SendLoop()
+		if err != nil {
+			log.Println(err)
+		}
+	}()
+
+	go pump.OutputLoop()
+
+	err = pump.ReceiveLoop()
+	if err != nil {
+		log.Println(err)
+		return
+	}
 
 }

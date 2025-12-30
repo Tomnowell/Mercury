@@ -5,6 +5,7 @@ import (
 	"fmt"
 
 	"github.com/Tomnowell/Mercury/internal/audio"
+	"github.com/Tomnowell/Mercury/internal/media"
 	pa "github.com/gordonklaus/portaudio"
 )
 
@@ -17,7 +18,7 @@ type Input struct {
 func NewInput(format audio.Format) (*Input, error) {
 	in := &Input{
 		format: format,
-		buffer: make([]int16, format.Channels*256),
+		buffer: make([]int16, format.Channels*media.SamplesPerFrame(format.SampleRate)),
 	}
 
 	stream, err := pa.OpenDefaultStream(format.Channels, 0, float64(format.SampleRate), len(in.buffer), in.buffer)

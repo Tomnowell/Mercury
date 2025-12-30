@@ -8,6 +8,8 @@ const (
 )
 
 type Format struct {
-	SampleRate SampleRate
-	Channels   int
+	SampleRate      SampleRate
+	Channels        int
+	FrameSize       int
+	SamplesPerFrame int
 }

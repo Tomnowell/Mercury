@@ -32,12 +32,6 @@ func NewOutput(format Format) (Output, error) {
 	return backend.NewOutput(format)
 }
 
-type format struct {
-	SampleRate int
-	Channels   int
-	FrameSize  int
-}
-
 type Input interface {
 	Read([]int16) (int, error)
 	Close() error

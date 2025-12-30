@@ -12,17 +12,15 @@ const (
 )
 
 type Pump struct {
-	conn   *net.UDPConn
-	remote *net.UDPAddr
-	input  audio.Input
-	output audio.Output
-	format audio.Format
-
-	sequence  uint16
-	timestamp uint32
-
+	conn         *net.UDPConn
+	remote       *net.UDPAddr
+	input        audio.Input
+	output       audio.Output
+	format       audio.Format
+	sequence     uint16
+	timestamp    uint32
 	packetBuffer []byte
-	rx           chan []int16
+	jb           *JitterBuffer
 }
 
 func NewPump(
@@ -40,7 +38,11 @@ func NewPump(
 		output:       output,
 		format:       format,
 		packetBuffer: make([]byte, maxPacketSize),
-		rx:           make(chan []int16, 3),
+		jb: NewJitterBuffer(
+			0,
+			3,
+			SamplesPerFrame(format.SampleRate),
+		),
 	}
 }
 
@@ -94,34 +96,24 @@ func (pump *Pump) ReceiveLoop() error {
 			return err
 		}
 
-		select {
-		case pump.rx <- packet.Samples:
-			//OK
-		default:
-			// Drop packet buffer full
-		}
-
+		pump.jb.Push(packet.Sequence, packet.Samples)
 	}
 }
 
 func (pump *Pump) OutputLoop() {
+
 	buffer := make([]int16, SamplesPerFrame(pump.format.SampleRate))
 
 	for {
-		select {
-		case samples := <-pump.rx:
-			if len(samples) == len(buffer) {
-				copy(buffer, samples)
-			} else {
-				clear(buffer)
+		samples := pump.jb.Pop()
 
-			}
-		default:
+		if samples != nil && len(samples) == len(buffer) {
+			copy(buffer, samples)
+		} else {
 			clear(buffer)
 		}
-		_, err := pump.output.Write(buffer)
 
-		if err != nil {
+		if _, err := pump.output.Write(buffer); err != nil {
 			log.Println("Could not write to output")
 		}
 

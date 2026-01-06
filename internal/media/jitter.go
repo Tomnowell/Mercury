@@ -1,5 +1,9 @@
 package media
 
+import (
+	"log"
+)
+
 type JitterBuffer struct {
 	size      uint16
 	expected  uint16
@@ -49,10 +53,25 @@ func (jb *JitterBuffer) Pop() []int16 {
 	if ok {
 		delete(jb.buffer, jb.expected)
 		jb.expected++
+
+		log.Printf("Popping off jitter buffer samples: %v", samples[:min(8, len(samples))])
 		return samples
 	}
 
 	// Missing packet, adbance
 	jb.expected++
 	return nil
+}
+
+func (jb *JitterBuffer) Reset() {
+	jb.buffer = make(map[uint16][]int16)
+	jb.started = false
+}
+
+func (jb *JitterBuffer) Depth() int {
+	return len(jb.buffer)
+}
+
+func (jb *JitterBuffer) Target() int {
+	return int(jb.expected)
 }

@@ -34,10 +34,12 @@ func NewOutput(format Format) (Output, error) {
 
 type Input interface {
 	Read([]int16) (int, error)
+	Reconfigure(format Format) error
 	Close() error
 }
 
 type Output interface {
 	Write([]int16) (int, error)
+	Reconfigure(format Format) error
 	Close() error
 }

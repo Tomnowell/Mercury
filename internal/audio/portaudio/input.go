@@ -55,3 +55,27 @@ func (input *Input) Close() error {
 	}
 	return errors.New("input stream nil, cannot Stop or Close")
 }
+
+func (input *Input) Reconfigure(format audio.Format) error {
+	input.stream.Stop()
+	input.stream.Close()
+
+	input.format = format
+	input.buffer = make([]int16, format.Channels*media.SamplesPerFrame(format.SampleRate))
+
+	stream, err := pa.OpenDefaultStream(
+		format.Channels,
+		0,
+		float64(format.SampleRate),
+		len(input.buffer),
+		&input.buffer,
+	)
+	if err != nil {
+		return err
+	}
+
+	input.stream = stream
+
+	return input.stream.Start()
+
+}

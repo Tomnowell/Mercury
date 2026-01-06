@@ -3,6 +3,7 @@ package portaudio
 import (
 	"errors"
 	"fmt"
+	"log"
 
 	"github.com/Tomnowell/Mercury/internal/audio"
 	"github.com/Tomnowell/Mercury/internal/media"
@@ -31,6 +32,8 @@ func NewOutput(format audio.Format) (*Output, error) {
 	if err := stream.Start(); err != nil {
 		return nil, fmt.Errorf("Error: Failed to start stream %w", err)
 	}
+
+	log.Println("PortAudio Output Started")
 	return out, nil
 }
 
@@ -51,4 +54,28 @@ func (out *Output) Close() error {
 		return nil
 	}
 	return errors.New("Error: out stream was nil, can't close non-existent stream")
+}
+
+func (out *Output) Reconfigure(format audio.Format) error {
+	out.stream.Stop()
+	out.stream.Close()
+
+	out.format = format
+	out.buffer = make([]int16, format.Channels*media.SamplesPerFrame(format.SampleRate))
+
+	stream, err := pa.OpenDefaultStream(
+		format.Channels,
+		0,
+		float64(format.SampleRate),
+		len(out.buffer),
+		&out.buffer,
+	)
+	if err != nil {
+		return err
+	}
+
+	out.stream = stream
+
+	return out.stream.Start()
+
 }

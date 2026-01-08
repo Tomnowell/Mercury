@@ -16,6 +16,8 @@ type Controller struct {
 	output  audio.Output
 	pump    *media.Pump
 	session *media.MediaSession
+
+	dialTarget string
 }
 
 func NewController(
@@ -38,6 +40,7 @@ func NewController(
 	}
 
 	conn, err := net.ListenUDP("udp6", localAddr)
+	defer conn.Close()
 
 	if err != nil {
 		log.Println("Error: Could not start UDP listener on: ", localAddr)
@@ -78,4 +81,31 @@ func (controller *Controller) Close() {
 	if controller.output != nil {
 		controller.output.Close()
 	}
+}
+
+func (controller *Controller) Dial(target string) {
+	if controller.role != media.RoleCaller {
+		log.Println("Dial() called on non-caller controller")
+		return
+	}
+
+	log.Println("Dialing: ", target)
+	controller.dialTarget = target
+
+	address, err := registry.Lookup(target)
+	if err != nil {
+		log.Println("Dialing failed: ", err)
+		return
+	}
+	controller.pump.SetRemote(address)
+
+}
+
+func (controller *Controller) Answer() {
+	if controller.role != media.RoleCallee {
+		log.Println("Answer() called on non-callee controller")
+		return
+	}
+
+	log.Println("Ready to accept incoming calls")
 }

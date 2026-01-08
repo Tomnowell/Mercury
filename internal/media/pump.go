@@ -206,6 +206,10 @@ func (pump *Pump) sendPacket(packet Packet) error {
 	return err
 }
 
+func (pump *Pump) SetRemote(remote *net.UDPAddr) {
+	pump.remote = remote
+}
+
 func (pump *Pump) SetPacketHandler(fn func(Packet)) {
 	pump.onPacket = fn
 }

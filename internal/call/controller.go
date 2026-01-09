@@ -3,9 +3,12 @@ package call
 import (
 	"log"
 	"net"
+	"strconv"
 
 	"github.com/Tomnowell/Mercury/internal/audio"
 	"github.com/Tomnowell/Mercury/internal/media"
+	"github.com/Tomnowell/Mercury/internal/registry"
+	"github.com/Tomnowell/Mercury/internal/signalling"
 )
 
 type Controller struct {
@@ -83,24 +86,6 @@ func (controller *Controller) Close() {
 	}
 }
 
-func (controller *Controller) Dial(target string) {
-	if controller.role != media.RoleCaller {
-		log.Println("Dial() called on non-caller controller")
-		return
-	}
-
-	log.Println("Dialing: ", target)
-	controller.dialTarget = target
-
-	address, err := registry.Lookup(target)
-	if err != nil {
-		log.Println("Dialing failed: ", err)
-		return
-	}
-	controller.pump.SetRemote(address)
-
-}
-
 func (controller *Controller) Answer() {
 	if controller.role != media.RoleCallee {
 		log.Println("Answer() called on non-callee controller")
@@ -108,4 +93,39 @@ func (controller *Controller) Answer() {
 	}
 
 	log.Println("Ready to accept incoming calls")
+}
+func Dial(
+	number registry.PhoneNumber,
+	format audio.Format,
+	registry signalling.RegistryClient,
+	localAddr *net.UDPAddr,
+) (*Controller, error) {
+
+	record, err := registry.Lookup(number)
+
+	if err != nil {
+		return nil, err
+	}
+
+	remoteAddr, err := net.ResolveUDPAddr("udp6", net.JoinHostPort(record.Endpoint.IP, strconv.Itoa(record.Endpoint.Port)))
+
+	if err != nil {
+		return nil, err
+	}
+
+	controller, err := NewController(
+		media.RoleCaller,
+		format,
+		localAddr,
+		remoteAddr,
+	)
+
+	if err != nil {
+		return nil, err
+	}
+
+	controller.Run()
+
+	return controller, nil
+
 }

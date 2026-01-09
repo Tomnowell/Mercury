@@ -18,6 +18,9 @@ func NewServer(addr string) error {
 		w.WriteHeader(http.StatusOK)
 	})
 
+	// Debug Only
+	mux.HandleFunc("/records/", handlers.ListRecords)
+
 	log.Println("Registry listening on: ", addr)
 	return http.ListenAndServe(addr, mux)
 

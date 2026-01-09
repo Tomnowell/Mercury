@@ -80,3 +80,16 @@ func (store *Store) DeRegister(number PhoneNumber) error {
 	delete(store.records, number)
 	return nil
 }
+
+func (store *Store) All() []*Record {
+	store.mu.RLock()
+	defer store.mu.RUnlock()
+
+	allRecords := make([]*Record, len(store.records))
+
+	for _, record := range store.records {
+		recordCopy := *record
+		allRecords = append(allRecords, &recordCopy)
+	}
+	return allRecords
+}

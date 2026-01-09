@@ -97,3 +97,8 @@ func (handler *RegistryHandlers) LookUp(w http.ResponseWriter, r *http.Request) 
 	_ = json.NewEncoder(w).Encode(response)
 
 }
+
+func (handler *RegistryHandlers) ListRecords(w http.ResponseWriter, r *http.Request) {
+	records := handler.store.All()
+	_ = json.NewEncoder(w).Encode(records)
+}

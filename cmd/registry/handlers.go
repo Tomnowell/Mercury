@@ -52,7 +52,7 @@ func (handler *RegistryHandlers) Register(w http.ResponseWriter, r *http.Request
 	record := &registry.Record{
 		Number: number,
 		Endpoint: registry.Endpoint{
-			IP:   string(net.ParseIP(request.IP)),
+			IP:   observedIP.String(),
 			Port: request.Port,
 		},
 		ObservedIP: observedIP,

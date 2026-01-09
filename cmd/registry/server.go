@@ -12,9 +12,9 @@ func NewServer(addr string) error {
 	handlers := NewRegistryHandlers(store)
 
 	mux := http.NewServeMux()
-	mux.HandleFunc("/register", handlers.Register)
-	mux.HandleFunc("/Lookup", handlers.LookUp)
-	mux.HandleFunc("/health", func(w http.ResponseWriter, _ *http.Request) {
+	mux.HandleFunc("/register/", handlers.Register)
+	mux.HandleFunc("/lookup/", handlers.LookUp)
+	mux.HandleFunc("/health/", func(w http.ResponseWriter, _ *http.Request) {
 		w.WriteHeader(http.StatusOK)
 	})
 

@@ -207,7 +207,15 @@ func (pump *Pump) sendPacket(packet Packet) error {
 }
 
 func (pump *Pump) SetRemote(remote *net.UDPAddr) {
+	pump.mu.Lock()
+	defer pump.mu.Unlock()
 	pump.remote = remote
+}
+
+func (pump *Pump) Remote() *net.UDPAddr {
+	pump.mu.Lock()
+	defer pump.mu.Unlock()
+	return pump.remote
 }
 
 func (pump *Pump) SetPacketHandler(fn func(Packet)) {

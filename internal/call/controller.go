@@ -4,29 +4,39 @@ import (
 	"log"
 	"net"
 	"strconv"
+	"sync"
 
 	"github.com/Tomnowell/Mercury/internal/audio"
 	"github.com/Tomnowell/Mercury/internal/media"
 	"github.com/Tomnowell/Mercury/internal/registry"
-	"github.com/Tomnowell/Mercury/internal/signalling"
 )
 
 type Controller struct {
+	number registry.PhoneNumber
 	role   media.Role
 	format audio.Format
 
-	input   audio.Input
-	output  audio.Output
+	registry registry.Client
+
+	localAddr *net.UDPAddr
+
+	input  audio.Input
+	output audio.Output
+
 	pump    *media.Pump
 	session *media.MediaSession
 
-	dialTarget string
+	conn net.Conn
+
+	mu sync.Mutex
 }
 
 func NewController(
+	number registry.PhoneNumber,
 	role media.Role,
 	format audio.Format,
-	localAddr, remoteAddr *net.UDPAddr,
+	localAddr *net.UDPAddr,
+	registryURL string,
 ) (*Controller, error) {
 	input, err := audio.NewInput(format)
 
@@ -42,19 +52,14 @@ func NewController(
 		return nil, err
 	}
 
-	conn, err := net.ListenUDP("udp6", localAddr)
-	defer conn.Close()
+	reg := *registry.NewClient(registryURL)
 
+	conn, err := net.ListenUDP("udp6", localAddr)
 	if err != nil {
-		log.Println("Error: Could not start UDP listener on: ", localAddr)
-		return nil, err
+		log.Println("Error: Could not create UDP listener")
 	}
 
-	pump := media.NewPump(conn, remoteAddr, input, output, format)
-
-	go pump.SendLoop()
-
-	go pump.OutputLoop()
+	pump := media.NewPump(conn, nil, input, output, format)
 
 	session := media.NewMediaSession(pump, role)
 
@@ -62,14 +67,32 @@ func NewController(
 		return session.IsEstablished()
 	})
 
-	return &Controller{
-		role:    role,
-		format:  format,
-		input:   input,
-		output:  output,
-		pump:    pump,
-		session: session,
-	}, nil
+	controller := &Controller{
+		number:    number,
+		role:      role,
+		format:    format,
+		localAddr: localAddr,
+		input:     input,
+		output:    output,
+		pump:      pump,
+		session:   session,
+		conn:      conn,
+		registry:  reg,
+	}
+
+	err = controller.register()
+	if err != nil {
+		return nil, err
+	}
+
+	go controller.pump.SendLoop()
+	go controller.pump.OutputLoop()
+
+	return controller, nil
+}
+
+func (controller *Controller) register() error {
+	return controller.registry.RegisterSelf(controller.number, controller.localAddr.Port)
 }
 
 func (controller *Controller) Run() {
@@ -86,6 +109,10 @@ func (controller *Controller) Close() {
 	}
 }
 
+func (controller *Controller) SetRole(role media.Role) {
+	controller.role = role
+}
+
 func (controller *Controller) Answer() {
 	if controller.role != media.RoleCallee {
 		log.Println("Answer() called on non-callee controller")
@@ -93,39 +120,32 @@ func (controller *Controller) Answer() {
 	}
 
 	log.Println("Ready to accept incoming calls")
+
+	go controller.session.Run()
+
 }
-func Dial(
-	number registry.PhoneNumber,
-	format audio.Format,
-	registry signalling.RegistryClient,
-	localAddr *net.UDPAddr,
-) (*Controller, error) {
 
-	record, err := registry.Lookup(number)
+func (controller *Controller) Dial(number registry.PhoneNumber) error {
+	controller.mu.Lock()
+	defer controller.mu.Unlock()
 
-	if err != nil {
-		return nil, err
-	}
+	record, err := controller.registry.Lookup(number)
 
-	remoteAddr, err := net.ResolveUDPAddr("udp6", net.JoinHostPort(record.Endpoint.IP, strconv.Itoa(record.Endpoint.Port)))
-
-	if err != nil {
-		return nil, err
-	}
-
-	controller, err := NewController(
-		media.RoleCaller,
-		format,
-		localAddr,
-		remoteAddr,
+	remoteAddr, err := net.ResolveUDPAddr(
+		"udp6",
+		net.JoinHostPort(
+			record.IP,
+			strconv.Itoa(record.Port)),
 	)
 
 	if err != nil {
-		return nil, err
+		return err
 	}
 
-	controller.Run()
+	controller.pump.SetRemote(remoteAddr)
 
-	return controller, nil
+	go controller.session.Run()
+
+	return nil
 
 }

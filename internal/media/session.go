@@ -54,7 +54,7 @@ func (session *MediaSession) Run() {
 	packetBuffer := make([]byte, MTU)
 
 	for {
-		n, _, err := session.pump.ReadPacket(packetBuffer)
+		n, addr, err := session.pump.ReadPacket(packetBuffer)
 
 		if n < 8 {
 			log.Println("Malformed Packet of size: ", n)
@@ -74,6 +74,11 @@ func (session *MediaSession) Run() {
 		}
 
 		if packet.IsControl {
+			if session.pump.Remote() == nil {
+				log.Println("Binding remote address to: ", addr)
+				session.pump.SetRemote(addr)
+			}
+
 			log.Println("Control Packet ", packet.CtrlType)
 			session.handleControl(packet)
 

@@ -10,25 +10,18 @@ import (
 	"github.com/Tomnowell/Mercury/internal/call"
 	"github.com/Tomnowell/Mercury/internal/media"
 	"github.com/Tomnowell/Mercury/internal/registry"
-	"github.com/Tomnowell/Mercury/internal/signalling"
 )
 
 func main() {
-	local_address := flag.String("listen", "[::1]:5000", "local address")
-	remote_address := flag.String("remote", "[::1]:5001", "remote address")
-	roleFlag := flag.String("role", "caller", `call role: "caller" or "callee"`)
+	// Mark -- Flags ----------------------------------------------------------------------------------------------
 
-	dial := flag.String("dial", "", "number to dial")
+	listenAddressString := flag.String("listen", "[::1]:5000", "local address")
+	dialString := flag.String("dial", "", "number to dial")
+	numberString := flag.String("number", "", "local phone number to register")
 	registryURL := flag.String("registry", "http://[::1]:5678", "registry base URL")
-
 	flag.Parse()
 
-	role, err := media.GetRole(*roleFlag)
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	log.Println("Starting as role:", role)
+	// Mark -- Audio Init -----------------------------------------------------------------------------------------
 	backend := portaudio.New()
 	if err := audio.Init(backend); err != nil {
 		log.Fatal(err)
@@ -39,59 +32,59 @@ func main() {
 			log.Println(err)
 		}
 	}()
+	format := audio.Format{
+		SampleRate: audio.SampleRate8K,
+		Channels:   1,
+	}
 
-	localAddr, err := net.ResolveUDPAddr("udp", *local_address)
+	// Mark -- LocalAddress ---------------------------------------------------------------------------------------------
+
+	localAddr, err := net.ResolveUDPAddr("udp", *listenAddressString)
 	if err != nil {
 		log.Fatal(err)
 	}
-	remoteAddr, err := net.ResolveUDPAddr("udp", *remote_address)
+
+	// Mark -- Local Number (Required) ----------------------------------------------------------------------------------
+	if *numberString == "" {
+		log.Fatal("You must provide a -number for this device")
+	}
+
+	localNumber, err := registry.ParsePhoneNumber(*numberString)
 	if err != nil {
-		log.Fatal(err)
-
+		log.Fatal("Invalid local Number", err)
 	}
 
-	if *dial != "" {
-		number, err := registry.ParsePhoneNumber(*dial)
-
-		if err != nil {
-			log.Fatal("Invalid Number")
-		}
-
-		registryClient := signalling.NewHTTPRegistryClient(*registryURL)
-
-		_, err = call.Dial(
-			number,
-			audio.Format{
-				SampleRate: audio.SampleRate8K,
-				Channels:   1,
-			},
-			registryClient,
-			localAddr,
-		)
-		if err != nil {
-			log.Fatal(err)
-
-		}
-	} else {
-
-		controller, err := call.NewController(
-			role,
-			audio.Format{
-				SampleRate: audio.SampleRate8K,
-				Channels:   1,
-			},
-			localAddr,
-			remoteAddr,
-		)
-
-		if err != nil {
-			log.Fatal(err)
-		}
-
-		defer controller.Close()
-
-		controller.Run()
-		select {}
+	// Mark -- Determine Role -------------------------------------------------------------------------------------------
+	role := media.RoleCallee
+	if *dialString != "" {
+		role = media.RoleCaller
 	}
 
+	// Mark -- Controller Setup -----------------------------------------------------------------------------------------
+	controller, err := call.NewController(localNumber, role, format, localAddr, *registryURL)
+	if err != nil {
+		log.Fatal("Could not start Controller", err)
+	}
+
+	// Mark -- Role Specific Behaviour ----------------------------------------------------------------------------------
+	switch role {
+	case media.RoleCaller:
+		// === CALLER ===
+		targetNumber, err := registry.ParsePhoneNumber(*dialString)
+		if err != nil {
+			log.Fatal("Invalid number to dial", err)
+		}
+
+		log.Println("Dialing: ", targetNumber)
+		err = controller.Dial(targetNumber)
+		if err != nil {
+			log.Fatal("Dialling failed: ", err)
+		}
+
+	case media.RoleCallee:
+		log.Println("Waiting for incoming calls...")
+		controller.Answer()
+	}
+
+	select {}
 }

@@ -13,6 +13,9 @@ const (
 	CtrlInvite ControlType = iota
 	CtrlOK
 	CtrlAck
+	CtrlBusy
+	CtrlDecline
+	CtrlReset
 )
 
 type Packet struct {
@@ -24,6 +27,9 @@ type Packet struct {
 	IsControl bool
 
 	CtrlType ControlType
+
+	Source string
+	Target string
 
 	Payload   PayloadType
 	Restart   bool

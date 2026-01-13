@@ -14,26 +14,40 @@ func Encode(packet Packet, buffer []byte) int {
 	}
 
 	buffer[0] = flags
-
-	if packet.IsControl {
-		buffer[1] = byte(packet.CtrlType)
-	} else {
-		buffer[1] = byte(packet.Payload)
-	}
+	buffer[1] = byte(packet.CtrlType)
 
 	binary.BigEndian.PutUint16(buffer[2:], packet.Sequence)
 	binary.BigEndian.PutUint32(buffer[4:], packet.Timestamp)
 
 	offset := 8
 
+	// === CONTROL PACKETS ===
 	if packet.IsControl {
-		buffer[offset] = byte(packet.Payload)
-		return offset + 1
+
+		// INVITE carries identity
+		if packet.CtrlType == CtrlInvite {
+			src := []byte(packet.Source)
+			dst := []byte(packet.Target)
+
+			buffer[offset] = byte(len(src))
+			offset++
+			copy(buffer[offset:], src)
+			offset += len(src)
+
+			buffer[offset] = byte(len(dst))
+			offset++
+			copy(buffer[offset:], dst)
+			offset += len(dst)
+		}
+
+		return offset
 	}
 
+	// === MEDIA PACKETS ===
 	for _, sample := range packet.Samples {
 		binary.LittleEndian.PutUint16(buffer[offset:], uint16(sample))
 		offset += 2
 	}
+
 	return offset
 }

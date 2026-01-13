@@ -55,10 +55,10 @@ func main() {
 	}
 
 	// Mark -- Determine Role -------------------------------------------------------------------------------------------
-	role := media.RoleCallee
-	if *dialString != "" {
-		role = media.RoleCaller
-	}
+	role := media.RoleUnknown
+	//if *dialString != "" {
+	//		role = media.RoleCaller
+	//	}
 
 	// Mark -- Controller Setup -----------------------------------------------------------------------------------------
 	controller, err := call.NewController(localNumber, role, format, localAddr, *registryURL)
@@ -81,9 +81,9 @@ func main() {
 			log.Fatal("Dialling failed: ", err)
 		}
 
-	case media.RoleCallee:
+	case media.RoleUnknown:
 		log.Println("Waiting for incoming calls...")
-		controller.Answer()
+		controller.RunCLI()
 	}
 
 	select {}

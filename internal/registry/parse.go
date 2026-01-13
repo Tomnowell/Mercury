@@ -23,3 +23,8 @@ func ParsePhoneNumber(input string) (PhoneNumber, error) {
 
 	return PhoneNumber(input), nil
 }
+
+func IsPhoneNumber(input string) bool {
+	_, err := ParsePhoneNumber(input)
+	return err == nil
+}

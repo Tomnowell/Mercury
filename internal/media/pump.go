@@ -19,7 +19,6 @@ type Pump struct {
 	input        audio.Input
 	output       audio.Output
 	format       audio.Format
-	onPacket     func(Packet)
 	sequence     uint16
 	timestamp    uint32
 	packetBuffer []byte
@@ -88,7 +87,7 @@ func (pump *Pump) SendLoop() {
 				Samples:   buffer[:n],
 			}
 
-			if err := pump.sendPacket(packet); err != nil {
+			if err := pump.SendPacket(packet); err != nil {
 				log.Println("Error: Could not send packet")
 				continue
 			}
@@ -164,7 +163,7 @@ func (pump *Pump) RestartMedia() error {
 		Payload: PayloadType(pump.format.SampleRate),
 		Restart: true,
 	}
-	return pump.sendPacket(packet)
+	return pump.SendPacket(packet)
 }
 
 func (pump *Pump) RequestFallback() error {
@@ -200,7 +199,7 @@ func (pump *Pump) ReadPacket(buffer []byte) (int, *net.UDPAddr, error) {
 	return pump.conn.ReadFromUDP(buffer)
 }
 
-func (pump *Pump) sendPacket(packet Packet) error {
+func (pump *Pump) SendPacket(packet Packet) error {
 	n := Encode(packet, pump.packetBuffer)
 	_, err := pump.conn.WriteToUDP(pump.packetBuffer[:n], pump.remote)
 	return err
@@ -216,8 +215,4 @@ func (pump *Pump) Remote() *net.UDPAddr {
 	pump.mu.Lock()
 	defer pump.mu.Unlock()
 	return pump.remote
-}
-
-func (pump *Pump) SetPacketHandler(fn func(Packet)) {
-	pump.onPacket = fn
 }

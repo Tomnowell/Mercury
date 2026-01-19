@@ -22,12 +22,14 @@ type Pump struct {
 	sequence     uint16
 	timestamp    uint32
 	packetBuffer []byte
-	jb           *JitterBuffer
-	underflows   int
-	fallback     bool
-	mu           sync.Mutex
-	allowMedia   func() bool
-	outputDone   chan struct{}
+
+	audioFIFO  *AudioFIFO
+	jb         *JitterBuffer
+	underflows int
+	fallback   bool
+	mu         sync.Mutex
+	allowMedia func() bool
+	outputDone chan struct{}
 }
 
 func NewPump(
@@ -45,6 +47,7 @@ func NewPump(
 		output:       output,
 		format:       format,
 		packetBuffer: make([]byte, maxPacketSize),
+		audioFIFO:    NewAudioFifo(SamplesPerFrame(format.SampleRate) * 10),
 		jb: NewJitterBuffer(
 			0,
 			3,
@@ -54,46 +57,60 @@ func NewPump(
 	}
 }
 
-func (pump *Pump) SendLoop() {
-	samplesPerFrame := SamplesPerFrame(pump.format.SampleRate)
-	buffer := make([]int16, samplesPerFrame)
-	payload := PCM16_8K
+func (pump *Pump) AudioIngestLoop() {
+	buffer := make([]int16, SamplesPerFrame(pump.format.SampleRate))
 
 	for {
 		pump.mu.Lock()
 		in := pump.input
 		pump.mu.Unlock()
-
 		n, err := in.Read(buffer)
-
 		if err != nil {
-			log.Println("SendLoop input error:", err)
+			log.Println("Audio ingest error: ", err)
 			time.Sleep(10 * time.Millisecond)
 			continue
 		}
 
-		if n == 0 {
-			// Buffer is empty
-			log.Println("SendLoop: Buffer empty")
+		samples := make([]int16, n)
+		copy(samples, buffer[:n])
+		pump.audioFIFO.Push(samples)
+	}
+}
+
+func (pump *Pump) SendLoop() {
+
+	ticker := time.NewTicker(20 * time.Millisecond)
+	defer ticker.Stop()
+
+	samplesPerFrame := SamplesPerFrame(pump.format.SampleRate)
+
+	for range ticker.C {
+		if pump.allowMedia == nil || !pump.allowMedia() {
 			continue
 		}
 
-		if pump.allowMedia != nil && pump.allowMedia() {
-			packet := Packet{
-				Version:   1,
-				Payload:   payload,
-				Sequence:  pump.sequence,
-				Timestamp: pump.timestamp,
-				Samples:   buffer[:n],
-			}
+		samples := pump.audioFIFO.Pop(samplesPerFrame)
 
-			if err := pump.SendPacket(packet); err != nil {
-				log.Println("Error: Could not send packet")
-				continue
-			}
-			pump.sequence++
-			pump.timestamp += uint32(n)
+		if samples == nil || len(samples) < samplesPerFrame {
+			continue
 		}
+
+		packet := Packet{
+			Version:   1,
+			Payload:   PCM16_8K,
+			Sequence:  pump.sequence,
+			Timestamp: pump.timestamp,
+			Samples:   samples,
+		}
+
+		err := pump.SendPacket(packet)
+
+		if err != nil {
+			log.Println("Error: Could not send packet")
+			continue
+		}
+		pump.sequence++
+		pump.timestamp += uint32(len(samples))
 	}
 }
 
@@ -111,7 +128,6 @@ func (pump *Pump) OutputLoop() {
 				samples = pump.jb.Pop()
 			}
 			pump.mu.Unlock()
-
 			if samples != nil {
 				log.Printf("Media Out: samples=%d", samples)
 			}
@@ -126,11 +142,17 @@ func (pump *Pump) OutputLoop() {
 			if _, err := pump.output.Write(buffer); err != nil {
 				log.Println("Error: Output Write Error")
 			}
-			if pump.underflows > 20 && !pump.fallback && pump.allowMedia() {
-				log.Println("Alert: Audio underflows > 20")
+			if pump.underflows > 50 && !pump.fallback && pump.allowMedia() {
+				// log.Println("Alert: Audio underflows > 50")
 			}
 		}
 	}
+}
+
+func (pump *Pump) ResetSequence() {
+	pump.mu.Lock()
+	defer pump.mu.Unlock()
+	pump.sequence = 0
 }
 
 func (pump *Pump) RestartOutput() error {

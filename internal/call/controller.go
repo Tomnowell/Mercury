@@ -13,6 +13,20 @@ import (
 	"github.com/Tomnowell/Mercury/internal/registry"
 )
 
+type CallState int
+
+const (
+	StateIdle CallState = iota
+	StateCalling
+	StateRinging
+	StateEstablished
+)
+
+type IncomingCall struct {
+	From   registry.PhoneNumber
+	Packet media.Packet
+}
+
 type Controller struct {
 	number registry.PhoneNumber
 	format audio.Format
@@ -27,16 +41,17 @@ type Controller struct {
 	pump    *media.Pump
 	session *media.MediaSession
 
+	state CallState
+
 	conn net.Conn
 
 	mu sync.Mutex
 
-	pendingCall *media.IncomingCall
+	pendingCall *IncomingCall
 }
 
 func NewController(
 	number registry.PhoneNumber,
-	role media.Role,
 	format audio.Format,
 	localAddr *net.UDPAddr,
 	registryURL string,
@@ -60,10 +75,11 @@ func NewController(
 	conn, err := net.ListenUDP("udp6", localAddr)
 	if err != nil {
 		log.Println("Error: Could not create UDP listener")
+		return nil, err
 	}
 
 	pump := media.NewPump(conn, nil, input, output, format)
-	session := media.NewMediaSession(pump, media.RoleUnknown)
+	session := media.NewMediaSession(pump)
 
 	controller := &Controller{
 		number:    number,
@@ -76,11 +92,13 @@ func NewController(
 		session:   session,
 		registry:  reg,
 	}
+	controller.session.SetControlHandler(controller.handleControl)
+
 	pump.SetMediaGate(func() bool {
 		controller.mu.Lock()
 		defer controller.mu.Unlock()
 
-		return controller.session != nil && controller.session.IsEstablished()
+		return controller.session != nil && controller.state == StateEstablished
 	})
 
 	err = controller.register()
@@ -88,34 +106,16 @@ func NewController(
 		return nil, err
 	}
 
+	go controller.pump.AudioIngestLoop()
 	go controller.pump.SendLoop()
 	go controller.pump.OutputLoop()
-
 	go controller.session.Run()
-	go controller.listen()
 
 	return controller, nil
 }
 
 func (controller *Controller) register() error {
 	return controller.registry.RegisterSelf(controller.number, controller.localAddr.Port)
-}
-
-func (controller *Controller) listen() {
-	buffer := make([]byte, media.MTU)
-	for {
-		n, addr, err := controller.pump.ReadPacket(buffer)
-		if err != nil || n < 8 {
-			continue
-		}
-		packet, err := media.Decode(buffer[:n], n)
-		if err != nil {
-			continue
-		}
-		if packet.IsControl {
-			controller.handleControl(packet, addr)
-		}
-	}
 }
 
 func (controller *Controller) handleControl(packet media.Packet, addr *net.UDPAddr) {
@@ -128,16 +128,23 @@ func (controller *Controller) handleControl(packet media.Packet, addr *net.UDPAd
 	}
 
 	switch packet.CtrlType {
+
 	case media.CtrlInvite:
-		if controller.pendingCall != nil {
-			log.Println("Busy: Declining Call")
+		if controller.state != StateIdle {
 			controller.sendDecline()
-			return
 		}
+
+		controller.state = StateRinging
 
 		from, err := registry.ParsePhoneNumber(packet.Source)
 		if err != nil {
 			log.Println("Invalid source number", packet.Source, len(packet.Source))
+			return
+		}
+		to, err := registry.ParsePhoneNumber(packet.Target)
+		if to.String() != controller.number.String() {
+
+			log.Println("Wrong number!", to, controller.number)
 			return
 		}
 
@@ -145,20 +152,42 @@ func (controller *Controller) handleControl(packet media.Packet, addr *net.UDPAd
 			controller.pump.SetRemote(addr)
 		}
 
-		controller.pendingCall = &media.IncomingCall{
+		controller.pendingCall = &IncomingCall{
 			From:   from,
 			Packet: packet,
 		}
-
 		log.Println("Incoming call from: ", from.String())
 		log.Println("'a' to accept, 'd' to decline")
 
-	case media.CtrlOK, media.CtrlAck, media.CtrlDecline:
-		if controller.session != nil {
-			controller.session.HandleControl(packet, addr)
-		}
-	}
+	case media.CtrlOK:
 
+		if controller.state != StateCalling {
+			return
+		}
+
+		controller.state = StateEstablished
+
+		log.Println("Ok Received...Establishing State")
+		err := controller.sendAck()
+		if err != nil {
+			log.Println("Error: Could not send ACK...", err)
+			return
+		}
+		controller.session.StartMedia()
+
+	case media.CtrlAck:
+		log.Println("ACK Received")
+		if controller.state != StateRinging {
+			log.Println("...But state wasnt StateRinging")
+			return
+		}
+
+		controller.state = StateEstablished
+		controller.session.StartMedia()
+
+	case media.CtrlDecline:
+		// TODO: Consider what needs to happen when a call is declined...session reset is not quite right.
+	}
 }
 
 func (controller *Controller) Close() {
@@ -171,19 +200,16 @@ func (controller *Controller) Close() {
 	}
 }
 
-func (controller *Controller) Answer() {
-	controller.mu.Lock()
-	defer controller.mu.Unlock()
-
+func (controller *Controller) Reset() {
 	controller.session.Reset()
-	controller.session.SetRole(media.RoleCallee)
-	log.Println("Ready to accept incoming calls")
+
 }
 
 func (controller *Controller) Dial(number registry.PhoneNumber) error {
 	controller.mu.Lock()
 	defer controller.mu.Unlock()
 
+	controller.state = StateCalling
 	if controller.pendingCall != nil {
 		return errors.New("Already on a call: Busy")
 	}
@@ -205,28 +231,13 @@ func (controller *Controller) Dial(number registry.PhoneNumber) error {
 		return err
 	}
 
+	log.Println("Setting remote: ", remoteAddr)
 	controller.pump.SetRemote(remoteAddr)
 
-	controller.session.SetRole(media.RoleCaller)
 	log.Println("Calling: ", number.String())
 	go controller.inviteLoop(number)
 
 	return nil
-}
-
-func (controller *Controller) onIncomingCall(call media.IncomingCall) {
-	controller.mu.Lock()
-	defer controller.mu.Unlock()
-
-	if controller.pendingCall != nil {
-		log.Println("Busy: Already Ringing")
-		return
-	}
-
-	controller.pendingCall = &call
-
-	log.Printf("Incoming call From: %s", call.From)
-	log.Println("Type 'a' to accept or 'd' to decline")
 }
 
 func (controller *Controller) AcceptCall() error {
@@ -237,8 +248,7 @@ func (controller *Controller) AcceptCall() error {
 		return errors.New("no incoming call")
 	}
 
-	controller.session.SetRole(media.RoleCallee)
-	controller.session.OkLoop()
+	go controller.okLoop()
 	controller.pendingCall = nil
 
 	log.Println("Call accepted")
@@ -259,6 +269,7 @@ func (controller *Controller) DeclineCall() error {
 	}
 
 	controller.pendingCall = nil
+	controller.state = StateIdle
 
 	log.Println("Call declined")
 
@@ -273,21 +284,26 @@ func (controller *Controller) HangUp() {
 		return
 	}
 
-	controller.session = nil
+	controller.session.Reset()
+
 	controller.pump.SetRemote(nil)
+	controller.state = StateIdle
 
 	log.Println("Call ended")
 
 }
 
 func (controller *Controller) sendDecline() error {
-	packet := media.Packet{
-		Version:   1,
-		IsControl: true,
-		CtrlType:  media.CtrlDecline,
-	}
+	return controller.sendControl(media.CtrlDecline, controller.session.SelectedFormat)
+}
 
-	return controller.pump.SendPacket(packet)
+func (controller *Controller) sendAck() error {
+	log.Println("Sending ACK")
+	return controller.sendControl(media.CtrlAck, controller.session.SelectedFormat)
+}
+
+func (controller *Controller) sendOK() error {
+	return controller.sendControl(media.CtrlOK, controller.session.SelectedFormat)
 }
 
 func (controller *Controller) sendInvite(target registry.PhoneNumber) error {
@@ -299,31 +315,67 @@ func (controller *Controller) sendInvite(target registry.PhoneNumber) error {
 		Source:    controller.number.String(),
 		Target:    target.String(),
 	}
+
+	log.Println("Remote: ", controller.pump.Remote())
+
+	if controller.pump.Remote() == nil {
+		log.Println("Remote is nil??? ", controller.pump.Remote())
+		return errors.New("Pump remote not set: Cannot send invite")
+	}
+
+	return controller.pump.SendPacket(packet)
+}
+
+func (controller *Controller) sendControl(ctrl media.ControlType, payload media.PayloadType) error {
+	log.Println("sendControl called with type: ", ctrl)
+	packet := media.Packet{
+		Version:   1,
+		IsControl: true,
+		CtrlType:  ctrl,
+		Payload:   payload,
+	}
+
+	if controller.pump.Remote() == nil {
+		return errors.New("Pump remote not set: Cannot send control packet")
+	}
+
 	return controller.pump.SendPacket(packet)
 }
 
 func (controller *Controller) inviteLoop(target registry.PhoneNumber) {
-	ticker := time.NewTicker(5 * time.Second)
+	ticker := time.NewTicker(500 * time.Millisecond)
 	defer ticker.Stop()
-
 	for {
 		select {
 		case <-ticker.C:
-			if controller.session.IsEstablished() {
-				return
-			}
-			if controller.session.IsRinging() {
+			if controller.state != StateCalling {
 				return
 			}
 
 			err := controller.sendInvite(target)
 			if err != nil {
 				log.Println(err)
+			}
+		}
+	}
+}
 
+func (controller *Controller) okLoop() {
+	ticker := time.NewTicker(500 * time.Millisecond)
+	defer ticker.Stop()
+	for {
+		select {
+		case <-ticker.C:
+			if controller.state == StateEstablished {
+				return
 			}
 
+			err := controller.sendOK()
+			if err != nil {
+				log.Println("Error sending OK", err)
+			}
+			log.Println("Sending OK...")
 		}
 
 	}
-
 }

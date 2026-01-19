@@ -8,7 +8,6 @@ import (
 	"github.com/Tomnowell/Mercury/internal/audio"
 	"github.com/Tomnowell/Mercury/internal/audio/portaudio"
 	"github.com/Tomnowell/Mercury/internal/call"
-	"github.com/Tomnowell/Mercury/internal/media"
 	"github.com/Tomnowell/Mercury/internal/registry"
 )
 
@@ -55,20 +54,20 @@ func main() {
 	}
 
 	// Mark -- Determine Role -------------------------------------------------------------------------------------------
-	role := media.RoleUnknown
+	role := call.RoleUnknown
 	//if *dialString != "" {
 	//		role = media.RoleCaller
 	//	}
 
 	// Mark -- Controller Setup -----------------------------------------------------------------------------------------
-	controller, err := call.NewController(localNumber, role, format, localAddr, *registryURL)
+	controller, err := call.NewController(localNumber, format, localAddr, *registryURL)
 	if err != nil {
 		log.Fatal("Could not start Controller", err)
 	}
 
 	// Mark -- Role Specific Behaviour ----------------------------------------------------------------------------------
 	switch role {
-	case media.RoleCaller:
+	case call.RoleCaller:
 		// === CALLER ===
 		targetNumber, err := registry.ParsePhoneNumber(*dialString)
 		if err != nil {
@@ -81,8 +80,7 @@ func main() {
 			log.Fatal("Dialling failed: ", err)
 		}
 
-	case media.RoleUnknown:
-		log.Println("Waiting for incoming calls...")
+	case call.RoleUnknown:
 		controller.RunCLI()
 	}
 
